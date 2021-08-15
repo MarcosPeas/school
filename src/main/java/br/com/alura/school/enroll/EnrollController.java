@@ -6,14 +6,12 @@ import br.com.alura.school.user.User;
 import br.com.alura.school.user.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -45,5 +43,12 @@ public class EnrollController {
         }
         enrollRepository.save(new Enroll(LocalDateTime.now(), course, user));
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+
+    @GetMapping("/courses/enroll/report")
+    ResponseEntity<List<EnrollReportResponse>> report() {
+        List<EnrollReportResponse> report = enrollRepository.report();
+        return ResponseEntity.ok(report);
     }
 }
