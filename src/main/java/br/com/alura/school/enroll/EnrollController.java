@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -38,6 +39,10 @@ public class EnrollController {
         User user = userRepository.findByUsername(newEnrollRequest.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("Course %s not found", courseCode)));
 
+        Optional<Enroll> optional = enrollRepository.findByUserAndCourse(user, course);
+        if (optional.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         enrollRepository.save(new Enroll(LocalDateTime.now(), course, user));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
