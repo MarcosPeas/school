@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS Enroll;
+
+CREATE TABLE Enroll (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP,
+    user_id BIGINT NOT NULL,
+    course_id BIGINT NOT NULL
+);
+
 DROP TABLE IF EXISTS User;
 
 CREATE TABLE User (
@@ -15,13 +24,8 @@ CREATE TABLE Course (
     description VARCHAR(500)
 );
 
-DROP TABLE IF EXISTS Enroll;
+ALTER TABLE Enroll ADD CONSTRAINT fk_id_user
+FOREIGN KEY(user_id) REFERENCES User (id);
 
-CREATE TABLE Enroll (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP,
-    user_id BIGINT NOT NULL,
-    course_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES User(id),
-    FOREIGN KEY (course_id) REFERENCES Course(id)
-);
+ALTER TABLE Enroll ADD CONSTRAINT fk_id_course
+FOREIGN KEY(course_id) REFERENCES Course (id);

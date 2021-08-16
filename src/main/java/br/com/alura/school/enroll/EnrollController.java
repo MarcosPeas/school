@@ -31,11 +31,11 @@ public class EnrollController {
     }
 
     @PostMapping("/courses/{courseCode}/enroll")
-    ResponseEntity<Object> newUser(@PathVariable String courseCode, @RequestBody @Valid NewEnrollRequest newEnrollRequest) {
+    ResponseEntity<Object> newEnroll(@PathVariable String courseCode, @RequestBody @Valid NewEnrollRequest newEnrollRequest) {
         Course course = courseRepository.findByCode(courseCode)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("User %s not found", newEnrollRequest.getUsername())));
-        User user = userRepository.findByUsername(newEnrollRequest.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("Course %s not found", courseCode)));
+        User user = userRepository.findByUsername(newEnrollRequest.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("User %s not found", newEnrollRequest.getUsername())));
 
         Optional<Enroll> optional = enrollRepository.findByUserAndCourse(user, course);
         if (optional.isPresent()) {
@@ -45,10 +45,10 @@ public class EnrollController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
     @GetMapping("/courses/enroll/report")
     ResponseEntity<List<EnrollReportResponse>> report() {
         List<EnrollReportResponse> report = enrollRepository.report();
+        if (report.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(report);
     }
 }
