@@ -53,7 +53,7 @@ class EnrollControllerTest {
     }
 
     @Test
-    void should_throw_bad_request_when_enroll_already_exists() throws Exception {
+    void should_not_allow_duplication_of_enroll() throws Exception {
         User user = userRepository.save(new User("ana", "ana@email.com"));
         Course course = courseRepository.save(new Course("java-1", "Java OO", "Java and Object Orientation: Encapsulation, Inheritance and Polymorphism."));
         enrollRepository.save(new Enroll(LocalDateTime.now(), course, user));
@@ -83,14 +83,14 @@ class EnrollControllerTest {
     }
 
     @Test
-    void should_retrieve_report_when_no_content() throws Exception {
+    void not_content_when_enrollment_does_not_exist() throws Exception {
         mockMvc.perform(get("/courses/enroll/report")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    void should_throw_not_found_exception_when_user_not_found() throws Exception {
+    void not_found_when_user_does_not_exist() throws Exception {
         courseRepository.save(new Course("java-1", "Java OO", "Java and Object Orientation: Encapsulation, Inheritance and Polymorphism."));
         NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana");
 
@@ -102,7 +102,7 @@ class EnrollControllerTest {
 
 
     @Test
-    void should_throw_not_found_exception_when_course_not_found() throws Exception {
+    void not_found_when_course_does_not_exist() throws Exception {
         userRepository.save(new User("ana", "ana@email.com"));
         NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana");
 
