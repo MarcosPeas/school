@@ -1,11 +1,12 @@
 package br.com.alura.school.enroll;
 
-import br.com.alura.school.support.validation.Unique;
-import br.com.alura.school.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 public class NewEnrollRequest {
 
@@ -14,15 +15,24 @@ public class NewEnrollRequest {
     @JsonProperty
     private final String username;
 
+    @Min(value = 5, message = "The price cannot be less than 5")
+    @NotNull(message = "The price cannot be less than 5")
+    private final BigDecimal price;
+
     public NewEnrollRequest() {
-        this(null);
+        this(null, null);
     }
 
-    public NewEnrollRequest(String username) {
+    public NewEnrollRequest(String username, BigDecimal price) {
         this.username = username;
+        this.price = price;
     }
 
     String getUsername() {
         return username;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
     }
 }

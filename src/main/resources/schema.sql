@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS Enroll;
 CREATE TABLE Enroll (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     created_at TIMESTAMP,
+    price DECIMAL,
     user_id BIGINT NOT NULL,
     course_id BIGINT NOT NULL
 );

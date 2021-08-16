@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -44,7 +44,7 @@ class EnrollControllerTest {
         userRepository.save(new User("ana", "ana@email.com"));
         courseRepository.save(new Course("java-1", "Java OO", "Java and Object Orientation: Encapsulation, Inheritance and Polymorphism."));
 
-        NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana");
+        NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana", new BigDecimal(20));
 
         mockMvc.perform(post("/courses/java-1/enroll")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -56,9 +56,9 @@ class EnrollControllerTest {
     void should_not_allow_duplication_of_enroll() throws Exception {
         User user = userRepository.save(new User("ana", "ana@email.com"));
         Course course = courseRepository.save(new Course("java-1", "Java OO", "Java and Object Orientation: Encapsulation, Inheritance and Polymorphism."));
-        enrollRepository.save(new Enroll(LocalDateTime.now(), course, user));
+        enrollRepository.save(new Enroll(course, user, new BigDecimal(20)));
 
-        NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana");
+        NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana", new BigDecimal(20));
 
         mockMvc.perform(post("/courses/java-1/enroll")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -71,7 +71,7 @@ class EnrollControllerTest {
         User user = userRepository.save(new User("ana", "ana@email.com"));
         Course course = courseRepository.save(new Course("java-1", "Java OO", "Java and Object Orientation: Encapsulation, Inheritance and Polymorphism."));
 
-        enrollRepository.save(new Enroll(LocalDateTime.now(), course, user));
+        enrollRepository.save(new Enroll(course, user, new BigDecimal(20)));
 
         mockMvc.perform(get("/courses/enroll/report")
                         .accept(MediaType.APPLICATION_JSON))
@@ -92,7 +92,7 @@ class EnrollControllerTest {
     @Test
     void not_found_when_user_does_not_exist() throws Exception {
         courseRepository.save(new Course("java-1", "Java OO", "Java and Object Orientation: Encapsulation, Inheritance and Polymorphism."));
-        NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana");
+        NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana", new BigDecimal(20));
 
         mockMvc.perform(post("/courses/java-1/enroll")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,16 +100,28 @@ class EnrollControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     void not_found_when_course_does_not_exist() throws Exception {
         userRepository.save(new User("ana", "ana@email.com"));
-        NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana");
+        NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana", new BigDecimal(20));
 
         mockMvc.perform(post("/courses/java-1/enroll")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonMapper.writeValueAsString(newEnrollRequest)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void bad_request_when_the_price_is_less_than_5() throws Exception {
+        userRepository.save(new User("ana", "ana@email.com"));
+        courseRepository.save(new Course("java-1", "Java OO", "Java and Object Orientation: Encapsulation, Inheritance and Polymorphism."));
+
+        NewEnrollRequest newEnrollRequest = new NewEnrollRequest("ana", new BigDecimal(4));
+
+        mockMvc.perform(post("/courses/java-1/enroll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonMapper.writeValueAsString(newEnrollRequest)))
+                .andExpect(status().isBadRequest());
     }
 
 }

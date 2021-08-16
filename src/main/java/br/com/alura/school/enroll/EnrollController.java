@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,7 +41,7 @@ public class EnrollController {
         if (optional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        enrollRepository.save(new Enroll(LocalDateTime.now(), course, user));
+        enrollRepository.save(new Enroll(course, user, newEnrollRequest.getPrice()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

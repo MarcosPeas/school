@@ -2,9 +2,11 @@ package br.com.alura.school.enroll;
 
 import br.com.alura.school.course.Course;
 import br.com.alura.school.user.User;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-
+import javax.validation.constraints.Min;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -16,6 +18,7 @@ public class Enroll {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @ManyToOne
@@ -26,44 +29,34 @@ public class Enroll {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private BigDecimal price;
+
     public Enroll() {
     }
 
-    public Enroll(LocalDateTime createdAt, Course course, User user) {
-        this.createdAt = createdAt;
+    public Enroll(Course course, User user, BigDecimal price) {
         this.course = course;
         this.user = user;
+        this.price = price;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public Course getCourse() {
         return course;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public BigDecimal getPrice() {
+        return price;
     }
 }
