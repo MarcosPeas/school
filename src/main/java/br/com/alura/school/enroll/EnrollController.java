@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -47,7 +48,9 @@ public class EnrollController {
 
     @GetMapping("/courses/enroll/report")
     ResponseEntity<List<EnrollReportResponse>> report() {
-        List<EnrollReportResponse> report = enrollRepository.report();
+        List<EnrollReportResponse> report = enrollRepository.report()
+                .stream().map(EnrollReportResponse::new).collect(Collectors.toList());
+
         if (report.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(report);
     }

@@ -5,20 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class EnrollReportResponse {
 
     @JsonProperty
-    private final String email;
+    private String email;
 
     @JsonProperty("quantidade_matriculas")
-    private final long quantidadeMatriculas;
+    private long quantidadeMatriculas;
 
     public EnrollReportResponse() {
-        this(null, 0);
     }
 
-    public EnrollReportResponse(String email, long quantidadeMatriculas) {
-        this.email = email;
-        this.quantidadeMatriculas = quantidadeMatriculas;
+    public EnrollReportResponse(EnrollReport enrollReport) {
+        this.email = enrollReport.getEmail();
+        this.quantidadeMatriculas = enrollReport.getEnrollCount();
     }
-
 
 
 }
